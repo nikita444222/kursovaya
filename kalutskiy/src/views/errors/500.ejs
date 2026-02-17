@@ -1,0 +1,11 @@
+<%- include('../partials/page_start') %>
+
+<div class="empty">
+  <div class="empty__title">Ошибка сервера</div>
+  <div class="muted">Что-то пошло не так. Попробуйте обновить страницу.</div>
+  <% if (process.env.NODE_ENV !== 'production' && error) { %>
+    <pre class="codebox"><%= error.stack %></pre>
+  <% } %>
+</div>
+
+<%- include('../partials/page_end') %>

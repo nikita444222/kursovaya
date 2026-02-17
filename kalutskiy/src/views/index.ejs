@@ -1,0 +1,136 @@
+<%- include('partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <div class="muted">Обсуждения, советы, истории, породы, дрессировка — всё в одном месте.</div>
+  </div>
+  <% if (currentUser) { %>
+    <a class="btn btn--primary" href="/posts/new">Создать пост</a>
+  <% } else { %>
+    <a class="btn btn--primary" href="/auth/login">Войти и написать</a>
+  <% } %>
+</div>
+
+<section class="panel">
+  <form class="search" method="GET" action="/">
+    <div class="search__row">
+      <div class="field">
+        <label class="field__label" for="q">Поиск</label>
+        <input class="input" id="q" name="q" value="<%= filters.q %>" placeholder="Например: лай, прививки, корги..." />
+      </div>
+      <div class="field">
+        <label class="field__label" for="category">Категория</label>
+        <select class="select" id="category" name="category" data-autosubmit>
+          <option value="0">Все категории</option>
+          <% categories.forEach(c => { %>
+            <option value="<%= c.id %>" <%= (filters.categoryId===c.id ? 'selected' : '') %>><%= c.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="section">Раздел</label>
+        <select class="select" id="section" name="section" data-autosubmit>
+          <option value="0">Все разделы</option>
+          <% sections.forEach(s => { %>
+            <option value="<%= s.id %>" <%= (filters.sectionId===s.id ? 'selected' : '') %>><%= s.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="search__actions">
+        <button class="btn btn--primary" type="submit">Найти</button>
+        <a class="btn btn--ghost" href="/">Сбросить</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+<div class="grid">
+  <aside class="sidebar">
+    <div class="card card--pad">
+      <div class="card__title">Категории</div>
+      <div class="chips">
+        <a class="chip <%= !filters.categoryId ? 'chip--active' : '' %>" href="/?q=<%= encodeURIComponent(filters.q) %>">Все</a>
+        <% categories.forEach(c => { %>
+          <a class="chip <%= (filters.categoryId===c.id ? 'chip--active' : '') %>" href="/?q=<%= encodeURIComponent(filters.q) %>&category=<%= c.id %>"><%= c.name %></a>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="card card--pad">
+      <div class="card__title">Разделы</div>
+      <div class="chips">
+        <a class="chip <%= !filters.sectionId ? 'chip--active' : '' %>" href="/?q=<%= encodeURIComponent(filters.q) %><%= filters.categoryId ? '&category='+filters.categoryId : '' %>">Все</a>
+        <% sections.forEach(s => { %>
+          <a class="chip <%= (filters.sectionId===s.id ? 'chip--active' : '') %>" href="/?q=<%= encodeURIComponent(filters.q) %><%= filters.categoryId ? '&category='+filters.categoryId : '' %>&section=<%= s.id %>"><%= s.name %></a>
+        <% }) %>
+      </div>
+    </div>
+  </aside>
+
+  <section class="content">
+    <div class="content__meta">
+      <div class="muted">Найдено: <strong><%= pager.total %></strong></div>
+    </div>
+
+    <% if (!posts.length) { %>
+      <div class="empty">
+        <div class="empty__title">Постов пока нет</div>
+        <div class="muted">Попробуйте изменить фильтры или создать первый пост.</div>
+      </div>
+    <% } %>
+
+    <div class="list">
+      <% posts.forEach(p => { %>
+        <article class="postcard">
+          <div class="postcard__head">
+            <a class="postcard__title" href="/posts/<%= p.id %>"><%= p.title %></a>
+            <div class="postcard__badges">
+              <span class="badge"><%= p.category_name %></span>
+              <span class="badge badge--soft"><%= p.section_name %></span>
+            </div>
+          </div>
+
+          <div class="postcard__meta">
+            <div class="userline">
+              <span class="avatar avatar--sm" aria-hidden="true">
+                <% if (p.author_avatar) { %>
+                  <img src="<%= p.author_avatar %>" alt="" />
+                <% } else { %>
+                  <span class="avatar__letter"><%= String(p.author_username || 'U').slice(0,1).toUpperCase() %></span>
+                <% } %>
+              </span>
+              <div class="userline__text">
+                <div class="userline__name"><a href="/users/<%= p.author_id %>"><%= p.author_username %></a></div>
+                <div class="muted">• <%= new Date(p.created_at).toLocaleString('ru-RU') %> • <%= p.comments_count %> комментариев</div>
+              </div>
+            </div>
+
+            <div class="postcard__actions">
+              <% if (currentUser) { %>
+                <form action="/posts/<%= p.id %>/save" method="POST" class="inline">
+                  <button class="btn btn--ghost btn--icon" type="submit" title="<%= p.is_saved ? 'Убрать из сохраненных' : 'Сохранить' %>">
+                    <span class="icon"><%= p.is_saved ? '★' : '☆' %></span>
+                    <span class="sr-only">Сохранить</span>
+                  </button>
+                </form>
+              <% } %>
+              <a class="btn btn--ghost" href="/posts/<%= p.id %>">Открыть</a>
+            </div>
+          </div>
+
+          <p class="postcard__excerpt"><%= (p.content || '').slice(0, 180) %><%= (p.content || '').length > 180 ? '…' : '' %></p>
+        </article>
+      <% }) %>
+    </div>
+
+    <% if (pager.pages > 1) { %>
+      <div class="pager">
+        <% for (let i=1; i<=pager.pages; i++) { %>
+          <a class="pager__item <%= i===pager.page ? 'pager__item--active' : '' %>" href="/?q=<%= encodeURIComponent(filters.q) %><%= filters.categoryId ? '&category='+filters.categoryId : '' %><%= filters.sectionId ? '&section='+filters.sectionId : '' %>&page=<%= i %>"><%= i %></a>
+        <% } %>
+      </div>
+    <% } %>
+  </section>
+</div>
+
+<%- include('partials/page_end') %>

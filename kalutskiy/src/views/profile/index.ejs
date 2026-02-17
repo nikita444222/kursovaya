@@ -1,0 +1,63 @@
+<%- include('../partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <h1 class="h1">Профиль</h1>
+    <div class="muted">Управляйте данными и следите за активностью.</div>
+  </div>
+  <a class="btn btn--primary" href="/profile/edit">Редактировать</a>
+</div>
+
+<section class="profile">
+  <div class="card card--pad profile__card">
+    <div class="profile__top">
+      <div class="avatar avatar--lg" aria-hidden="true">
+        <% if (user.avatar_url) { %>
+          <img src="<%= user.avatar_url %>" alt="" />
+        <% } else { %>
+          <span class="avatar__letter"><%= String(user.username || 'U').slice(0,1).toUpperCase() %></span>
+        <% } %>
+      </div>
+      <div class="profile__meta">
+        <div class="profile__name"><%= user.username %></div>
+        <div class="muted"><%= user.email %></div>
+        <div class="muted">На форуме с <%= new Date(user.created_at).toLocaleDateString('ru-RU') %></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__num"><%= stats.posts %></div>
+        <div class="muted">Постов</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num"><%= stats.comments %></div>
+        <div class="muted">Комментариев</div>
+      </div>
+    </div>
+
+    <div class="bio">
+      <div class="card__title">О себе</div>
+      <div class="muted"><%= user.bio ? user.bio : 'Пока пусто — можно добавить в настройках.' %></div>
+    </div>
+  </div>
+
+  <div class="card card--pad">
+    <div class="card__title">Мои комментарии (последние 20)</div>
+    <% if (!comments.length) { %>
+      <div class="muted">Комментариев пока нет.</div>
+    <% } else { %>
+      <div class="commentfeed">
+        <% comments.forEach(c => { %>
+          <div class="commentfeed__item">
+            <div class="muted"><%= new Date(c.created_at).toLocaleString('ru-RU') %></div>
+            <div class="commentfeed__text"><%= c.content %></div>
+            <a class="link" href="/posts/<%= c.post_id %>"><%= c.post_title %></a>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/page_end') %>

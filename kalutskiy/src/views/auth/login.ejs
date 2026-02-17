@@ -1,0 +1,36 @@
+<%- include('../partials/page_start') %>
+
+<div class="auth">
+  <div class="card card--pad auth__card">
+    <h1 class="h2">Вход</h1>
+    <form method="POST" action="/auth/login" class="form">
+      <div class="field">
+        <label class="field__label" for="email">Email</label>
+        <input class="input" id="email" name="email" type="email" required placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="password">Пароль</label>
+        <input class="input" id="password" name="password" type="password" required minlength="6" />
+      </div>
+      <button class="btn btn--primary" type="submit">Войти</button>
+    </form>
+
+    <div class="auth__bottom">
+      <span class="muted">Нет аккаунта?</span>
+      <a href="/auth/register">Регистрация</a>
+    </div>
+  </div>
+
+  <div class="auth__aside">
+    <div class="card card--pad">
+      <div class="card__title">Зачем входить?</div>
+      <ul class="ul">
+        <li>Публикация постов и комментариев</li>
+        <li>Сохранение в избранное</li>
+        <li>Личный профиль и история активности</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

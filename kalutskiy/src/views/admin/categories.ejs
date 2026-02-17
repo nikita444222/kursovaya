@@ -1,0 +1,66 @@
+<%- include('../partials/page_start') %>
+
+<div class="page">
+  <div class="page__head">
+    <h1 class="page__title">Категории</h1>
+    <div class="chips">
+      <a class="chip" href="/admin">Админка</a>
+      <a class="chip chip--active" href="/admin/categories">Категории</a>
+      <a class="chip" href="/admin/sections">Разделы</a>
+      <a class="chip" href="/admin/users">Пользователи</a>
+      <a class="chip" href="/admin/posts">Посты</a>
+    </div>
+  </div>
+
+  <div class="card card--pad">
+    <h2 class="h2">Создать категорию</h2>
+    <form class="form" action="/admin/categories/create" method="POST">
+      <div class="grid">
+        <div class="field">
+          <label class="field__label">Название</label>
+          <input class="input" name="name" placeholder="Например: Дрессировка" required />
+        </div>
+        <div class="field">
+          <label class="field__label">Slug (необязательно)</label>
+          <input class="input" name="slug" placeholder="training" />
+        </div>
+      </div>
+      <button class="btn btn--primary" type="submit">Создать</button>
+    </form>
+  </div>
+
+  <div class="section" style="margin-top:16px">
+    <div class="section__head">
+      <h2 class="h2">Список категорий</h2>
+    </div>
+
+    <div class="table">
+      <div class="table__row table__row--head" style="grid-template-columns:2fr 1.4fr auto">
+        <div>Название</div>
+        <div>Slug</div>
+        <div>Действия</div>
+      </div>
+
+      <% categories.forEach(c => { %>
+        <div class="table__row" style="grid-template-columns:2fr 1.4fr auto">
+          <form class="form" action="/admin/categories/<%= c.id %>/update" method="POST" style="display:contents">
+            <div class="field" style="margin:0" data-label="Название">
+              <input class="input" name="name" value="<%= c.name %>" required />
+            </div>
+            <div class="field" style="margin:0" data-label="Slug">
+              <input class="input" name="slug" value="<%= c.slug %>" required />
+            </div>
+            <div class="table__actions" data-label="Действия">
+              <button class="btn btn--ghost" type="submit">Сохранить</button>
+              <form class="inline" action="/admin/categories/<%= c.id %>/delete" method="POST" onsubmit="return confirm('Удалить категорию?');">
+                <button class="btn btn--danger" type="submit">Удалить</button>
+              </form>
+            </div>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

@@ -1,0 +1,79 @@
+<%- include('../partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <h1 class="h1">Сохранённые</h1>
+    <div class="muted">Ваше избранное — чтобы быстро вернуться к полезным обсуждениям.</div>
+  </div>
+  <a class="btn btn--ghost" href="/">На главную</a>
+</div>
+
+<section class="panel">
+  <form class="search" method="GET" action="/saved">
+    <div class="search__row">
+      <div class="field">
+        <label class="field__label" for="category">Категория</label>
+        <select class="select" id="category" name="category" data-autosubmit>
+          <option value="0">Все категории</option>
+          <% categories.forEach(c => { %>
+            <option value="<%= c.id %>" <%= filters.categoryId===c.id ? 'selected' : '' %>><%= c.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="section">Раздел</label>
+        <select class="select" id="section" name="section" data-autosubmit>
+          <option value="0">Все разделы</option>
+          <% sections.forEach(s => { %>
+            <option value="<%= s.id %>" <%= filters.sectionId===s.id ? 'selected' : '' %>><%= s.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="search__actions">
+        <a class="btn btn--ghost" href="/saved">Сбросить</a>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="list">
+  <% if (!posts.length) { %>
+    <div class="empty">
+      <div class="empty__title">Пока пусто</div>
+      <div class="muted">На главной странице можно добавлять посты в сохранённые.</div>
+    </div>
+  <% } %>
+
+  <% posts.forEach(p => { %>
+    <article class="postcard">
+      <div class="postcard__head">
+        <a class="postcard__title" href="/posts/<%= p.id %>"><%= p.title %></a>
+        <div class="postcard__badges">
+          <span class="badge"><%= p.category_name %></span>
+          <span class="badge badge--soft"><%= p.section_name %></span>
+        </div>
+      </div>
+      <div class="postcard__meta">
+        <div class="userline">
+          <span class="avatar avatar--sm" aria-hidden="true">
+            <% if (p.author_avatar) { %>
+              <img src="<%= p.author_avatar %>" alt="" />
+            <% } else { %>
+              <span class="avatar__letter"><%= String(p.author_username || 'U').slice(0,1).toUpperCase() %></span>
+            <% } %>
+          </span>
+          <div class="userline__text">
+            <div class="userline__name"><a href="/users/<%= p.author_id %>"><%= p.author_username %></a></div>
+            <div class="muted"><%= new Date(p.created_at).toLocaleString('ru-RU') %></div>
+          </div>
+        </div>
+        <form action="/posts/<%= p.id %>/save" method="POST" class="inline">
+          <button class="btn btn--ghost" type="submit">Убрать</button>
+        </form>
+      </div>
+      <p class="postcard__excerpt"><%= (p.content || '').slice(0, 180) %><%= (p.content || '').length > 180 ? '…' : '' %></p>
+    </article>
+  <% }) %>
+</section>
+
+<%- include('../partials/page_end') %>

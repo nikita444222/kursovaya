@@ -1,0 +1,40 @@
+<%- include('../partials/page_start') %>
+
+<div class="auth">
+  <div class="card card--pad auth__card">
+    <h1 class="h2">Регистрация</h1>
+    <form method="POST" action="/auth/register" class="form">
+      <div class="field">
+        <label class="field__label" for="username">Ник</label>
+        <input class="input" id="username" name="username" required minlength="2" maxlength="32" placeholder="DogLover" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="email">Email</label>
+        <input class="input" id="email" name="email" type="email" required placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="password">Пароль</label>
+        <input class="input" id="password" name="password" type="password" required minlength="6" placeholder="Минимум 6 символов" />
+      </div>
+      <button class="btn btn--primary" type="submit">Создать аккаунт</button>
+    </form>
+
+    <div class="auth__bottom">
+      <span class="muted">Уже есть аккаунт?</span>
+      <a href="/auth/login">Вход</a>
+    </div>
+  </div>
+
+  <div class="auth__aside">
+    <div class="card card--pad">
+      <div class="card__title">Правила</div>
+      <ul class="ul">
+        <li>Без агрессии и травли</li>
+        <li>Не публикуем личные данные</li>
+        <li>Спорим вежливо, помогаем по делу 🙂</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

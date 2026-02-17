@@ -1,0 +1,43 @@
+<%- include('../partials/page_start') %>
+
+<div class="page">
+  <div class="page__head">
+    <h1 class="page__title">Посты</h1>
+    <div class="chips">
+      <a class="chip" href="/admin">Админка</a>
+      <a class="chip" href="/admin/categories">Категории</a>
+      <a class="chip" href="/admin/sections">Разделы</a>
+      <a class="chip" href="/admin/users">Пользователи</a>
+      <a class="chip chip--active" href="/admin/posts">Посты</a>
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="table__row table__row--head" style="grid-template-columns:2fr 1fr 1fr .9fr auto">
+      <div>Заголовок</div>
+      <div>Автор</div>
+      <div>Раздел</div>
+      <div>Дата</div>
+      <div>Действия</div>
+    </div>
+
+    <% posts.forEach(p => { %>
+      <div class="table__row" style="grid-template-columns:2fr 1fr 1fr .9fr auto">
+        <div data-label="Заголовок">
+          <a href="/posts/<%= p.id %>"><%= p.title %></a>
+          <div class="muted" style="font-size:12px"><%= p.category_name %></div>
+        </div>
+        <div data-label="Автор"><a href="/users/<%= p.author_id %>"><%= p.author_username %></a></div>
+        <div class="muted" data-label="Раздел"><%= p.section_name %></div>
+        <div class="muted" data-label="Дата"><%= new Date(p.created_at).toLocaleString('ru-RU') %></div>
+        <div class="table__actions" data-label="Действия">
+          <form class="inline" action="/admin/posts/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Удалить пост?');">
+            <button class="btn btn--ghost btn--sm" type="submit">Удалить</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

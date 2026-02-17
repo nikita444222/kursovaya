@@ -1,0 +1,62 @@
+<%- include('../partials/page_start') %>
+
+<div class="profile">
+  <div class="profile__head">
+    <h1 class="h1">Профиль пользователя</h1>
+  </div>
+
+  <div class="card card--pad">
+    <div class="userline">
+      <span class="avatar" aria-hidden="true">
+        <% if (user.avatar_url) { %>
+          <img src="<%= user.avatar_url %>" alt="" />
+        <% } else { %>
+          <span class="avatar__letter"><%= String(user.username || 'U').slice(0,1).toUpperCase() %></span>
+        <% } %>
+      </span>
+
+      <div class="userline__text">
+        <div class="userline__name"><%= user.username %></div>
+        <div class="muted">На форуме с <%= new Date(user.created_at).toLocaleDateString('ru-RU') %></div>
+      </div>
+    </div>
+
+    <% if (user.bio) { %>
+      <div class="contentbox" style="margin-top:12px">
+        <p><%= user.bio %></p>
+      </div>
+    <% } %>
+
+    <div class="chips" style="margin-top:12px">
+      <span class="chip">Постов: <strong><%= stats.posts %></strong></span>
+    </div>
+  </div>
+
+  <section class="section" style="margin-top:16px">
+    <div class="section__head">
+      <h2 class="h2">Посты пользователя</h2>
+    </div>
+
+    <% if (!posts.length) { %>
+      <div class="empty">
+        <div class="empty__title">Постов пока нет</div>
+        <div class="muted">Этот пользователь ещё не публиковал темы.</div>
+      </div>
+    <% } %>
+
+    <div class="list">
+      <% posts.forEach(p => { %>
+        <a class="card card--pad list__item" href="/posts/<%= p.id %>">
+          <div class="list__title"><%= p.title %></div>
+          <div class="list__meta muted">
+            <span><%= p.category_name %> / <%= p.section_name %></span>
+            <span class="sep">•</span>
+            <span><%= new Date(p.created_at).toLocaleString('ru-RU') %></span>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<%- include('../partials/page_end') %>

@@ -1,0 +1,36 @@
+<%- include('../partials/page_start') %>
+
+<div class="page">
+  <div class="page__head">
+    <h1 class="page__title">Админка</h1>
+    <div class="muted">Управление форумом: категории, разделы, пользователи, посты.</div>
+  </div>
+
+  <div class="chips">
+    <a class="chip" href="/admin/categories">Категории</a>
+    <a class="chip" href="/admin/sections">Разделы</a>
+    <a class="chip" href="/admin/users">Пользователи</a>
+    <a class="chip" href="/admin/posts">Посты</a>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card card--pad">
+      <div class="muted">Пользователей</div>
+      <div class="kpi"><%= stats.users %></div>
+    </div>
+    <div class="card card--pad">
+      <div class="muted">Постов</div>
+      <div class="kpi"><%= stats.posts %></div>
+    </div>
+    <div class="card card--pad">
+      <div class="muted">Комментариев</div>
+      <div class="kpi"><%= stats.comments %></div>
+    </div>
+    <div class="card card--pad">
+      <div class="muted">Категорий / разделов</div>
+      <div class="kpi"><%= stats.categories %> / <%= stats.sections %></div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

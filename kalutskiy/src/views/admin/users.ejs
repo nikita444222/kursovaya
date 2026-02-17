@@ -1,0 +1,53 @@
+<%- include('../partials/page_start') %>
+
+<div class="page">
+  <div class="page__head">
+    <h1 class="page__title">Пользователи</h1>
+    <div class="chips">
+      <a class="chip" href="/admin">Админка</a>
+      <a class="chip" href="/admin/categories">Категории</a>
+      <a class="chip" href="/admin/sections">Разделы</a>
+      <a class="chip chip--active" href="/admin/users">Пользователи</a>
+      <a class="chip" href="/admin/posts">Посты</a>
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="table__row table__row--head" style="grid-template-columns:1.2fr 1.4fr .7fr .7fr .9fr auto">
+      <div>Пользователь</div>
+      <div>Email</div>
+      <div>Посты</div>
+      <div>Комменты</div>
+      <div>Роль</div>
+      <div>Действия</div>
+    </div>
+
+    <% users.forEach(u => { %>
+      <div class="table__row" style="grid-template-columns:1.2fr 1.4fr .7fr .7fr .9fr auto">
+        <div data-label="Пользователь">
+          <div><a href="/users/<%= u.id %>"><%= u.username %></a></div>
+          <div class="muted" style="font-size:12px"><%= new Date(u.created_at).toLocaleDateString('ru-RU') %></div>
+        </div>
+        <div class="muted" data-label="Email"><%= u.email %></div>
+        <div data-label="Посты"><%= u.posts_count %></div>
+        <div data-label="Комменты"><%= u.comments_count %></div>
+        <form class="inline" data-label="Роль" action="/admin/users/<%= u.id %>/role" method="POST">
+          <select class="select" name="role" onchange="this.form.submit()" <%= u.id === currentUser.id ? 'disabled' : '' %>>
+            <option value="user" <%= u.role === 'user' ? 'selected' : '' %>>user</option>
+            <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>admin</option>
+          </select>
+        </form>
+        <div class="table__actions" data-label="Действия">
+          <a class="btn btn--ghost btn--sm" href="/users/<%= u.id %>">Профиль</a>
+          <% if (u.id !== currentUser.id) { %>
+            <form class="inline" action="/admin/users/<%= u.id %>/delete" method="POST" onsubmit="return confirm('Удалить пользователя? Это удалит его посты и комментарии.');">
+              <button class="btn btn--ghost btn--sm" type="submit">Удалить</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

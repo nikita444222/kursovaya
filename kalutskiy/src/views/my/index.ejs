@@ -1,0 +1,46 @@
+<%- include('../partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <h1 class="h1">Мои посты</h1>
+    <div class="muted">Всего постов: <strong><%= total %></strong></div>
+  </div>
+  <a class="btn btn--primary" href="/posts/new">Создать пост</a>
+</div>
+
+<section class="card card--pad">
+  <% if (!posts.length) { %>
+    <div class="empty">
+      <div class="empty__title">У вас пока нет постов</div>
+      <div class="muted">Нажмите “Создать пост” и начните обсуждение.</div>
+    </div>
+  <% } else { %>
+    <div class="table">
+      <div class="table__row table__row--head" style="grid-template-columns:1.7fr 1.1fr .6fr .8fr auto">
+        <div>Пост</div>
+        <div>Категория / Раздел</div>
+        <div>Комментарии</div>
+        <div>Дата</div>
+        <div></div>
+      </div>
+      <% posts.forEach(p => { %>
+        <div class="table__row" style="grid-template-columns:1.7fr 1.1fr .6fr .8fr auto">
+          <div data-label="Пост">
+            <a class="link" href="/posts/<%= p.id %>"><%= p.title %></a>
+          </div>
+          <div class="muted" data-label="Категория / Раздел"><%= p.category_name %> / <%= p.section_name %></div>
+          <div class="muted" data-label="Комментарии"><%= p.comments_count %></div>
+          <div class="muted" data-label="Дата"><%= new Date(p.created_at).toLocaleDateString('ru-RU') %></div>
+          <div class="table__actions" data-label="Действия">
+            <a class="btn btn--ghost btn--sm" href="/posts/<%= p.id %>/edit">Редактировать</a>
+            <form action="/posts/<%= p.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Удалить пост?');">
+              <button class="btn btn--ghost btn--sm" type="submit">Удалить</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/page_end') %>

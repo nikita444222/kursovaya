@@ -1,0 +1,83 @@
+<%- include('../partials/page_start') %>
+
+<div class="page">
+  <div class="page__head">
+    <h1 class="page__title">Разделы</h1>
+    <div class="chips">
+      <a class="chip" href="/admin">Админка</a>
+      <a class="chip" href="/admin/categories">Категории</a>
+      <a class="chip chip--active" href="/admin/sections">Разделы</a>
+      <a class="chip" href="/admin/users">Пользователи</a>
+      <a class="chip" href="/admin/posts">Посты</a>
+    </div>
+  </div>
+
+  <div class="card card--pad">
+    <h2 class="h2">Создать раздел</h2>
+    <form class="form" action="/admin/sections/create" method="POST">
+      <div class="grid">
+        <div class="field">
+          <label class="field__label">Категория</label>
+          <select class="select" name="category_id" required>
+            <option value="">Выберите...</option>
+            <% categories.forEach(c => { %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label">Название</label>
+          <input class="input" name="name" placeholder="Например: Базовые команды" required />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label">Slug (необязательно)</label>
+        <input class="input" name="slug" placeholder="training-basic" />
+      </div>
+      <button class="btn btn--primary" type="submit">Создать</button>
+    </form>
+  </div>
+
+  <div class="section" style="margin-top:16px">
+    <div class="section__head">
+      <h2 class="h2">Список разделов</h2>
+    </div>
+
+    <div class="table">
+      <div class="table__row table__row--head" style="grid-template-columns:1.2fr 1.2fr 1.2fr auto">
+        <div>Категория</div>
+        <div>Раздел</div>
+        <div>Slug</div>
+        <div>Действия</div>
+      </div>
+
+      <% sections.forEach(s => { %>
+        <div class="table__row" style="grid-template-columns:1.2fr 1.2fr 1.2fr auto">
+          <form class="form" action="/admin/sections/<%= s.id %>/update" method="POST" style="display:contents">
+            <div class="field" style="margin:0" data-label="Категория">
+              <select class="select" name="category_id" required>
+                <% categories.forEach(c => { %>
+                  <option value="<%= c.id %>" <%= c.id === s.category_id ? 'selected' : '' %>><%= c.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="field" style="margin:0" data-label="Раздел">
+              <input class="input" name="name" value="<%= s.name %>" required />
+            </div>
+            <div class="field" style="margin:0" data-label="Slug">
+              <input class="input" name="slug" value="<%= s.slug %>" required />
+            </div>
+            <div class="table__actions" data-label="Действия">
+              <button class="btn btn--ghost" type="submit">Сохранить</button>
+              <form class="inline" action="/admin/sections/<%= s.id %>/delete" method="POST" onsubmit="return confirm('Удалить раздел?');">
+                <button class="btn btn--danger" type="submit">Удалить</button>
+              </form>
+            </div>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/page_end') %>

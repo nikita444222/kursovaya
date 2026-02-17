@@ -1,0 +1,113 @@
+<%- include('../partials/page_start') %>
+
+<div class="postview">
+  <div class="postview__head">
+    <div>
+      <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <span class="sep">/</span>
+        <span class="muted"><%= post.category_name %></span>
+        <span class="sep">/</span>
+        <span class="muted"><%= post.section_name %></span>
+      </div>
+      <h1 class="h1"><%= post.title %></h1>
+    </div>
+
+    <div class="postview__actions">
+      <% if (currentUser) { %>
+        <form action="/posts/<%= post.id %>/save" method="POST" class="inline">
+          <button class="btn btn--ghost" type="submit"><%= post.is_saved ? '★ В сохраненных' : '☆ Сохранить' %></button>
+        </form>
+      <% } %>
+
+      <% if (currentUser && currentUser.id === post.author_id) { %>
+        <a class="btn btn--primary" href="/posts/<%= post.id %>/edit">Редактировать</a>
+      <% } %>
+
+      <% if (currentUser && (currentUser.id === post.author_id || currentUser.role === 'admin')) { %>
+        <form action="/posts/<%= post.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Удалить пост?');">
+          <button class="btn btn--ghost" type="submit">Удалить</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="card card--pad">
+    <div class="userline">
+      <span class="avatar" aria-hidden="true">
+        <% if (post.author_avatar) { %>
+          <img src="<%= post.author_avatar %>" alt="" />
+        <% } else { %>
+          <span class="avatar__letter"><%= String(post.author_username || 'U').slice(0,1).toUpperCase() %></span>
+        <% } %>
+      </span>
+      <div class="userline__text">
+        <div class="userline__name"><a href="/users/<%= post.author_id %>"><%= post.author_username %></a></div>
+        <div class="muted"><%= new Date(post.created_at).toLocaleString('ru-RU') %></div>
+      </div>
+    </div>
+
+    <div class="contentbox">
+      <p><%= post.content %></p>
+    </div>
+  </div>
+
+  <section class="comments" id="comments">
+    <div class="comments__head">
+      <h2 class="h2">Комментарии (<%= comments.length %>)</h2>
+    </div>
+
+    <% if (currentUser) { %>
+      <form class="card card--pad form" action="/posts/<%= post.id %>/comments" method="POST">
+        <div class="field">
+          <label class="field__label" for="content">Ваш комментарий</label>
+          <textarea class="textarea" id="content" name="content" rows="4" required placeholder="Напишите по делу..."> </textarea>
+        </div>
+        <button class="btn btn--primary" type="submit">Отправить</button>
+      </form>
+    <% } else { %>
+      <div class="card card--pad">
+        <div class="muted">Чтобы писать комментарии, нужно <a href="/auth/login">войти</a>.</div>
+      </div>
+    <% } %>
+
+    <div class="commentlist">
+      <% if (!comments.length) { %>
+        <div class="empty">
+          <div class="empty__title">Пока без комментариев</div>
+          <div class="muted">Станьте первым 🙂</div>
+        </div>
+      <% } %>
+
+      <% comments.forEach(c => { %>
+        <article class="comment">
+          <div class="comment__meta">
+            <div class="userline">
+              <span class="avatar avatar--sm" aria-hidden="true">
+                <% if (c.avatar_url) { %>
+                  <img src="<%= c.avatar_url %>" alt="" />
+                <% } else { %>
+                  <span class="avatar__letter"><%= String(c.username || 'U').slice(0,1).toUpperCase() %></span>
+                <% } %>
+              </span>
+              <div class="userline__text">
+                <div class="userline__name"><a href="/users/<%= c.user_id %>"><%= c.username %></a></div>
+                <div class="muted"><%= new Date(c.created_at).toLocaleString('ru-RU') %></div>
+              </div>
+            </div>
+
+            <% if (currentUser && currentUser.id === c.user_id) { %>
+              <form class="inline" action="/posts/<%= post.id %>/comments/<%= c.id %>/delete" method="POST" onsubmit="return confirm('Удалить комментарий?');">
+                <button class="btn btn--ghost btn--sm" type="submit">Удалить</button>
+              </form>
+            <% } %>
+          </div>
+
+          <div class="comment__body"><%= c.content %></div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<%- include('../partials/page_end') %>

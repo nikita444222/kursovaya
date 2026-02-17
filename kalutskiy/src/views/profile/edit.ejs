@@ -1,0 +1,37 @@
+<%- include('../partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <h1 class="h1">Настройки профиля</h1>
+    <div class="muted">Ник, био и аватарка.</div>
+  </div>
+  <a class="btn btn--ghost" href="/profile">Назад</a>
+</div>
+
+<section class="card card--pad">
+  <form method="POST" action="/profile/edit" enctype="multipart/form-data" class="form">
+    <div class="field">
+      <label class="field__label" for="username">Ник</label>
+      <input class="input" id="username" name="username" required maxlength="32" value="<%= user.username %>" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="bio">О себе</label>
+      <textarea class="textarea" id="bio" name="bio" rows="5" maxlength="500" placeholder="Например: У меня два бигля и один кот, люблю дрессировку и прогулки."><%= user.bio || '' %></textarea>
+      <div class="hint muted">До 500 символов.</div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="avatar">Фото профиля</label>
+      <input class="input" id="avatar" name="avatar" type="file" accept="image/*" />
+      <div class="hint muted">JPEG/PNG/WEBP/GIF, до <%= process.env.MAX_AVATAR_MB || 3 %> МБ.</div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--primary" type="submit">Сохранить</button>
+      <a class="btn btn--ghost" href="/profile">Отмена</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/page_end') %>

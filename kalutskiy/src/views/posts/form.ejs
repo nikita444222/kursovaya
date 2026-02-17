@@ -1,0 +1,47 @@
+<%- include('../partials/page_start') %>
+
+<div class="page__head">
+  <div>
+    <h1 class="h2"><%= mode === 'edit' ? 'Редактирование поста' : 'Новый пост' %></h1>
+    <div class="muted">Выберите раздел, напишите заголовок и текст.</div>
+  </div>
+  <a class="btn btn--ghost" href="<%= mode === 'edit' ? ('/posts/'+post.id) : '/' %>">Назад</a>
+</div>
+
+<section class="card card--pad">
+  <form method="POST" action="<%= mode === 'edit' ? ('/posts/'+post.id+'/edit') : '/posts/new' %>" class="form">
+    <div class="field">
+      <label class="field__label" for="section_id">Раздел</label>
+      <select class="select" id="section_id" name="section_id" required>
+        <option value="">Выберите раздел</option>
+        <% sections.forEach(s => { %>
+          <option value="<%= s.id %>" <%= Number(post.section_id)===s.id ? 'selected' : '' %>><%= s.category_name %> — <%= s.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="title">Заголовок</label>
+      <input class="input" id="title" name="title" required maxlength="200" value="<%= post.title %>" placeholder="Например: Как отучить щенка грызть обувь?" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="content">Текст</label>
+      <textarea class="textarea" id="content" name="content" required rows="10" placeholder="Опишите ситуацию, породу, возраст, что уже пробовали..."><%= post.content %></textarea>
+      <div class="hint muted">Поддерживается только обычный текст и переносы строк (без HTML).</div>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn btn--primary" type="submit"><%= mode === 'edit' ? 'Сохранить' : 'Опубликовать' %></button>
+      <a class="btn btn--ghost" href="<%= mode === 'edit' ? ('/posts/'+post.id) : '/' %>">Отмена</a>
+    </div>
+  </form>
+</section>
+
+<% if (mode === 'edit') { %>
+  <form action="/posts/<%= post.id %>/delete" method="POST" class="mt" onsubmit="return confirm('Удалить пост?');">
+    <button class="btn btn--danger" type="submit">Удалить пост</button>
+  </form>
+<% } %>
+
+<%- include('../partials/page_end') %>

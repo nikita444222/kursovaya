@@ -1,0 +1,40 @@
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="/" aria-label="DoggoForum">
+      <img class="brand__logo" src="/img/i.webp" alt="Логотип" />
+      <span class="brand__text">Форум про собак</span>
+    </a>
+
+    <nav class="nav" aria-label="Навигация">
+      <a class="nav__link" href="/">Главная</a>
+      <% if (currentUser) { %>
+        <a class="nav__link" href="/my">Мои посты</a>
+        <a class="nav__link" href="/saved">Сохранённые</a>
+        <% if (currentUser.role === 'admin') { %>
+          <a class="nav__link" href="/admin">Админка</a>
+        <% } %>
+      <% } %>
+    </nav>
+
+    <div class="userbar">
+      <% if (currentUser) { %>
+        <a class="userchip" href="/profile">
+          <span class="avatar" aria-hidden="true" data-avatar>
+            <% if (currentUser.avatar_url) { %>
+              <img src="<%= currentUser.avatar_url %>" alt="Аватар" />
+            <% } else { %>
+              <span class="avatar__letter"><%= String(currentUser.username || 'U').slice(0,1).toUpperCase() %></span>
+            <% } %>
+          </span>
+          <span class="userchip__name"><%= currentUser.username %></span>
+        </a>
+        <form action="/auth/logout" method="POST" class="inline">
+          <button class="btn btn--ghost" type="submit">Выйти</button>
+        </form>
+      <% } else { %>
+        <a class="btn btn--ghost" href="/auth/login">Вход</a>
+        <a class="btn btn--primary" href="/auth/register">Регистрация</a>
+      <% } %>
+    </div>
+  </div>
+</header>
